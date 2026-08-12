@@ -3,9 +3,10 @@
 A Claude Code status line in the Catppuccin Mocha palette — and, unlike most status lines,
 it shows how much of your Claude.ai subscription you have already burned through.
 
-<img src="docs/statusline.png" width="617" alt="Mocha Powerline status line: model, directory, git branch, context window, 5h and 7d subscription limits, clock">
+<img src="docs/statusline.png" width="676" alt="Mocha Powerline status line: model, directory, git branch, context window, 5h and 7d subscription limits, clock">
 
-*Above: the 5-hour window is 85% spent with 3 hours to go, so the countdown has kicked in.*
+*Above: 18% of the context window in use, 7% of the 5-hour session limit and 34% of the weekly
+one. Once a window passes 80%, a `↻` countdown to its reset appears beside the number.*
 
 | Segment | What it shows |
 |---|---|
