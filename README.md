@@ -3,9 +3,9 @@
 A Claude Code status line in the Catppuccin Mocha palette — and, unlike most status lines,
 it shows how much of your Claude.ai subscription you have already burned through.
 
-```
- Opus 5 ▸ statusbar ▸ main ✗ ▸ 3.12.4 ▸ 󰾆 37% ▸  5h 12% · 7d 63% ▸  09:15
-```
+<img src="docs/statusline.png" width="617" alt="Mocha Powerline status line: model, directory, git branch, context window, 5h and 7d subscription limits, clock">
+
+*Above: the 5-hour window is 85% spent with 3 hours to go, so the countdown has kicked in.*
 
 | Segment | What it shows |
 |---|---|
