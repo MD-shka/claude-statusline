@@ -23,9 +23,9 @@ git_segment=""
 if [ -n "$git_branch" ]; then
   git_dirty=$(git --no-optional-locks -C "$cwd" status --porcelain 2>/dev/null)
   if [ -n "$git_dirty" ]; then
-    git_segment=" ${git_branch} ✗"
+    git_segment="  ${git_branch} ✗"
   else
-    git_segment=" ${git_branch}"
+    git_segment="  ${git_branch}"
   fi
 fi
 
@@ -34,7 +34,7 @@ py_segment=""
 if [ -f "$cwd/pyproject.toml" ] || [ -f "$cwd/setup.py" ] \
   || [ -f "$cwd/requirements.txt" ] || [ -f "$cwd/.python-version" ]; then
   py_version=$(python3 -V 2>/dev/null | awk '{print $2}')
-  [ -n "$py_version" ] && py_segment=" ${py_version}"
+  [ -n "$py_version" ] && py_segment="  ${py_version}"
 fi
 
 # Context window usage, shown when available
@@ -89,14 +89,14 @@ fg() { printf '\033[38;2;%sm' "$1"; }
 bg() { printf '\033[48;2;%sm' "$1"; }
 reset() { printf '\033[0m'; }
 # Powerline solid separator glyph (nerd font)
-SEP=''
+SEP=''
 
 # Segment 1: model name (bg red)
-printf '%s%s  %s ' "$(bg "$red")" "$(fg "$crust")" "$model"
+printf '%s%s  %s ' "$(bg "$red")" "$(fg "$crust")" "$model"
 
 # Segment 2: directory (bg peach)
 printf '%s%s%s' "$(fg "$red")" "$(bg "$peach")" "$SEP"
-printf '%s%s %s ' "$(fg "$crust")" "$(bg "$peach")" "$dir_display"
+printf '%s%s  %s ' "$(fg "$crust")" "$(bg "$peach")" "$dir_display"
 
 # Segment 3: git branch/status (bg yellow), only when in a git repo
 if [ -n "$git_segment" ]; then
@@ -110,7 +110,7 @@ fi
 # Segment 4: python version (bg green), only for python projects
 if [ -n "$py_segment" ]; then
   printf '%s%s%s' "$(fg "$last_bg")" "$(bg "$green")" "$SEP"
-  printf '%s%s %s ' "$(fg "$crust")" "$(bg "$green")" "$py_segment"
+  printf '%s%s%s ' "$(fg "$crust")" "$(bg "$green")" "$py_segment"
   last_bg="$green"
 fi
 
@@ -124,13 +124,13 @@ fi
 # Segment 6: subscription usage limits (bg mauve)
 if [ -n "$limit_segment" ]; then
   printf '%s%s%s' "$(fg "$last_bg")" "$(bg "$mauve")" "$SEP"
-  printf '%s%s  %s ' "$(fg "$crust")" "$(bg "$mauve")" "$limit_segment"
+  printf '%s%s  %s ' "$(fg "$crust")" "$(bg "$mauve")" "$limit_segment"
   last_bg="$mauve"
 fi
 
 # Segment 7: time (bg lavender)
 printf '%s%s%s' "$(fg "$last_bg")" "$(bg "$lavender")" "$SEP"
-printf '%s%s  %s ' "$(fg "$crust")" "$(bg "$lavender")" "$now"
+printf '%s%s  %s ' "$(fg "$crust")" "$(bg "$lavender")" "$now"
 printf '%s%s' "$(fg "$lavender")" "$SEP"
 
 reset
