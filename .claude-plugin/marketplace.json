@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "mocha-powerline",
+  "description": "Статусная строка Claude Code в палитре Catppuccin Mocha с расходом лимитов подписки",
+  "owner": {
+    "name": "Madmadmax",
+    "email": "maximchumbaev@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "mocha-powerline",
+      "description": "Статусная строка Claude Code в палитре Catppuccin Mocha: модель, каталог, git, python, контекст, расход лимитов подписки за 5 часов и за неделю, время.",
+      "category": "productivity",
+      "source": "./"
+    }
+  ]
+}

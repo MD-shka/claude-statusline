@@ -1,0 +1,16 @@
+{
+  "name": "mocha-powerline",
+  "description": "Статусная строка Claude Code в палитре Catppuccin Mocha: модель, каталог, git, python, контекст, расход лимитов подписки за 5 часов и за неделю, время.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Madmadmax",
+    "email": "maximchumbaev@gmail.com",
+    "url": "https://github.com/Madmadmax"
+  },
+  "homepage": "https://github.com/Madmadmax/claude-statusline",
+  "repository": "https://github.com/Madmadmax/claude-statusline",
+  "license": "MIT",
+  "keywords": ["statusline", "catppuccin", "powerline", "usage-limits"],
+  "commands": "./commands",
+  "hooks": "./hooks/hooks.json"
+}
