@@ -8,6 +8,13 @@
 # ~/.claude/settings.json:
 #   "statusLine": { "type": "command", "command": "sh \"$HOME/.claude/statusline-command.sh\"" }
 
+# Percent thresholds at which a segment changes colour. LIMIT_DANGER also turns
+# on the time until the window resets.
+CTX_WARN=40
+CTX_DANGER=60
+LIMIT_WARN=60
+LIMIT_DANGER=80
+
 input=$(cat)
 
 cwd=$(printf '%s' "$input" | jq -r '.cwd')
@@ -62,15 +69,30 @@ countdown() {
   fi
 }
 
+# Usage level against the thresholds: ok | warn | danger. Non-numeric input is ok.
+level() {
+  int_part=${1%%.*}
+  case "$int_part" in
+    '' | *[!0-9]*) printf 'ok'; return ;;
+  esac
+  if [ "$int_part" -ge "$3" ]; then
+    printf 'danger'
+  elif [ "$int_part" -ge "$2" ]; then
+    printf 'warn'
+  else
+    printf 'ok'
+  fi
+}
+
 limit_segment=""
 if [ -n "$five_pct" ]; then
   limit_segment=$(printf '5h %.0f%%' "$five_pct")
-  [ "${five_pct%%.*}" -ge 80 ] 2>/dev/null && limit_segment="${limit_segment}$(countdown "$five_reset")"
+  [ "${five_pct%%.*}" -ge "$LIMIT_DANGER" ] 2>/dev/null && limit_segment="${limit_segment}$(countdown "$five_reset")"
 fi
 if [ -n "$week_pct" ]; then
   [ -n "$limit_segment" ] && limit_segment="${limit_segment} · "
   limit_segment=$(printf '%s7d %.0f%%' "$limit_segment" "$week_pct")
-  [ "${week_pct%%.*}" -ge 80 ] 2>/dev/null && limit_segment="${limit_segment}$(countdown "$week_reset")"
+  [ "${week_pct%%.*}" -ge "$LIMIT_DANGER" ] 2>/dev/null && limit_segment="${limit_segment}$(countdown "$week_reset")"
 fi
 
 now=$(date '+%R')
@@ -84,6 +106,28 @@ green='166;227;161'
 sapphire='116;199;236'
 mauve='203;166;247'
 lavender='180;190;254'
+
+# Alarm colours deliberately sit outside the Catppuccin palette: it is pastel
+# throughout, and an alarm in that range blends into its neighbours instead of
+# warning. They need no Latte counterparts for the same reason.
+warn_bg='255;196;0'
+danger_bg='255;85;85'
+
+# Segment background follows the thresholds. Context and limits share the alarm
+# colours: when both are alarming, the merged block reads as one warning.
+ctx_bg="$sapphire"
+case "$(level "$used_pct" "$CTX_WARN" "$CTX_DANGER")" in
+  warn) ctx_bg="$warn_bg" ;;
+  danger) ctx_bg="$danger_bg" ;;
+esac
+
+limit_bg="$mauve"
+five_level=$(level "$five_pct" "$LIMIT_WARN" "$LIMIT_DANGER")
+week_level=$(level "$week_pct" "$LIMIT_WARN" "$LIMIT_DANGER")
+case "$five_level$week_level" in
+  *danger*) limit_bg="$danger_bg" ;;
+  *warn*) limit_bg="$warn_bg" ;;
+esac
 
 fg() { printf '\033[38;2;%sm' "$1"; }
 bg() { printf '\033[48;2;%sm' "$1"; }
@@ -114,18 +158,18 @@ if [ -n "$py_segment" ]; then
   last_bg="$green"
 fi
 
-# Segment 5: context window usage (bg sapphire)
+# Segment 5: context window usage (bg by threshold, sapphire by default)
 if [ -n "$ctx_segment" ]; then
-  printf '%s%s%s' "$(fg "$last_bg")" "$(bg "$sapphire")" "$SEP"
-  printf '%s%s 󰾆%s ' "$(fg "$crust")" "$(bg "$sapphire")" "$ctx_segment"
-  last_bg="$sapphire"
+  printf '%s%s%s' "$(fg "$last_bg")" "$(bg "$ctx_bg")" "$SEP"
+  printf '%s%s 󰾆%s ' "$(fg "$crust")" "$(bg "$ctx_bg")" "$ctx_segment"
+  last_bg="$ctx_bg"
 fi
 
-# Segment 6: subscription usage limits (bg mauve)
+# Segment 6: subscription usage limits (bg by threshold, mauve by default)
 if [ -n "$limit_segment" ]; then
-  printf '%s%s%s' "$(fg "$last_bg")" "$(bg "$mauve")" "$SEP"
-  printf '%s%s  %s ' "$(fg "$crust")" "$(bg "$mauve")" "$limit_segment"
-  last_bg="$mauve"
+  printf '%s%s%s' "$(fg "$last_bg")" "$(bg "$limit_bg")" "$SEP"
+  printf '%s%s  %s ' "$(fg "$crust")" "$(bg "$limit_bg")" "$limit_segment"
+  last_bg="$limit_bg"
 fi
 
 # Segment 7: time (bg lavender)
