@@ -10,10 +10,10 @@
 
 # Percent thresholds at which a segment changes colour. LIMIT_DANGER also turns
 # on the time until the window resets.
-CTX_WARN=40
-CTX_DANGER=60
-LIMIT_WARN=60
-LIMIT_DANGER=80
+CTX_WARN=50
+CTX_DANGER=70
+LIMIT_WARN=80
+LIMIT_DANGER=95
 
 input=$(cat)
 
