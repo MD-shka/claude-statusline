@@ -10,7 +10,7 @@ one. Once a window passes 80%, a `↻` countdown to its reset appears beside the
 
 | Segment | What it shows |
 |---|---|
-| model | Display name of the current model |
+| model | Display name of the current model, followed by the reasoning effort level when Claude Code reports one — `low`, `medium`, `high`, `xhigh`, `max`. The value is printed as it arrives, so new levels appear on their own |
 | directory | Name of the working directory |
 | git | Branch, plus `✗` when the working tree is dirty. Hidden outside a repository |
 | python | `python3` version, only in Python projects |

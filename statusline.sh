@@ -19,7 +19,13 @@ input=$(cat)
 
 cwd=$(printf '%s' "$input" | jq -r '.cwd')
 model=$(printf '%s' "$input" | jq -r '.model.display_name')
+effort=$(printf '%s' "$input" | jq -r '.effort.level // empty')
 used_pct=$(printf '%s' "$input" | jq -r '.context_window.used_percentage // empty')
+
+# Reasoning effort, appended to the model name. The value is printed verbatim —
+# low, medium, high, xhigh, max today — so new levels need no change here.
+# Absent on models and versions that do not report it: then nothing is added.
+[ -n "$effort" ] && model="${model} · ${effort}"
 
 dir_display=$(basename "$cwd" 2>/dev/null)
 [ -z "$dir_display" ] && dir_display="$cwd"
