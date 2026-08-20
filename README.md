@@ -14,8 +14,8 @@ one. Once a window passes 80%, a `↻` countdown to its reset appears beside the
 | directory | Name of the working directory |
 | git | Branch, plus `✗` when the working tree is dirty. Hidden outside a repository |
 | python | `python3` version, only in Python projects |
-| context | Percentage of the context window in use |
-| **limits** | **Subscription usage: `5h` is the session window, `7d` the weekly one. Past 80%, the time until reset appears (`↻2h`)** |
+| context | Percentage of the context window in use. The background turns amber at `CTX_WARN` and red at `CTX_DANGER` |
+| **limits** | **Subscription usage: `5h` is the session window, `7d` the weekly one. The background follows the worse of the two — amber at `LIMIT_WARN`, red at `LIMIT_DANGER` — and past `LIMIT_DANGER` the time until reset appears (`↻2h`)** |
 | clock | Hours and minutes |
 
 Segments disappear when they have nothing to say, and the neighbours re-join seamlessly.
@@ -190,8 +190,12 @@ it back next session unless you also disable the plugin.
 
 Everything lives in `statusline.sh`:
 
-- **Reset-time threshold** — find `-ge 80` (two places) and change the number. Set it to `-ge 0`
-  to always show the time until reset.
+- **Color thresholds** — `CTX_WARN` / `CTX_DANGER` and `LIMIT_WARN` / `LIMIT_DANGER` at the top
+  of the file. `LIMIT_DANGER` also turns on the `↻` countdown; set it to `0` to always show the
+  time until reset.
+- **Alarm colors** — `warn_bg` and `danger_bg`. They deliberately sit outside the Catppuccin
+  palette: the bar is pastel throughout, so an alarm in that range blends into its neighbours
+  instead of warning. For the same reason they need no Latte counterparts.
 - **Remove a segment** — delete its `if` block near the end of the file. Neighbours re-join on
   their own; the separator color comes from `last_bg`.
 - **Light palette (Catppuccin Latte)** — replace the color block, which is plain `R;G;B`:
