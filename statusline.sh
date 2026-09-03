@@ -8,12 +8,15 @@
 # ~/.claude/settings.json:
 #   "statusLine": { "type": "command", "command": "sh \"$HOME/.claude/statusline-command.sh\"" }
 
-# Percent thresholds at which a segment changes colour. LIMIT_DANGER also turns
-# on the time until the window resets.
+# Percent thresholds at which a segment changes colour.
 CTX_WARN=50
 CTX_DANGER=70
 LIMIT_WARN=80
 LIMIT_DANGER=95
+
+# Percent at which a window starts showing the time until it resets. Set it to
+# 0 to always show the countdown.
+LIMIT_COUNTDOWN=80
 
 input=$(cat)
 
@@ -93,12 +96,12 @@ level() {
 limit_segment=""
 if [ -n "$five_pct" ]; then
   limit_segment=$(printf '5h %.0f%%' "$five_pct")
-  [ "${five_pct%%.*}" -ge "$LIMIT_DANGER" ] 2>/dev/null && limit_segment="${limit_segment}$(countdown "$five_reset")"
+  [ "${five_pct%%.*}" -ge "$LIMIT_COUNTDOWN" ] 2>/dev/null && limit_segment="${limit_segment}$(countdown "$five_reset")"
 fi
 if [ -n "$week_pct" ]; then
   [ -n "$limit_segment" ] && limit_segment="${limit_segment} · "
   limit_segment=$(printf '%s7d %.0f%%' "$limit_segment" "$week_pct")
-  [ "${week_pct%%.*}" -ge "$LIMIT_DANGER" ] 2>/dev/null && limit_segment="${limit_segment}$(countdown "$week_reset")"
+  [ "${week_pct%%.*}" -ge "$LIMIT_COUNTDOWN" ] 2>/dev/null && limit_segment="${limit_segment}$(countdown "$week_reset")"
 fi
 
 now=$(date '+%R')
